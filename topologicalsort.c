@@ -2,14 +2,13 @@
 #include <stdlib.h>
 
 // Function to perform DFS and find topological sort
-void dfs(int node, int **graph, int *visited, int *stack, int *top, int vertices) {
-    // Mark the node as visited
-    visited[node] = 1;
+void dfs(int node, int n, int graph[n][n], int visited[n], int stack[n], int *top) {
+    visited[node] = 1;  // Mark node as visited
 
-    // Recurse for all the adjacent vertices of the current node
-    for (int i = 0; i < vertices; i++) {
+    // Recurse for all adjacent vertices
+    for (int i = 0; i < n; i++) {
         if (graph[node][i] == 1 && !visited[i]) {
-            dfs(i, graph, visited, stack, top, vertices);
+            dfs(i, n, graph, visited, stack, top);
         }
     }
 
@@ -18,59 +17,50 @@ void dfs(int node, int **graph, int *visited, int *stack, int *top, int vertices
 }
 
 // Function to perform topological sort using DFS
-void topologicalSort(int vertices, int **graph) {
-    int *visited = (int *)calloc(vertices, sizeof(int)); // Initialize all nodes as unvisited
-    int *stack = (int *)malloc(vertices * sizeof(int));  // To store the topological order
-    int top = 0;                                        // Index to insert in stack
+void topologicalSort(int n, int graph[n][n]) {
+    int visited[n];  // Array to track visited nodes
+    int stack[n];    // Stack to store topological order
+    int top = 0;     // Stack index
+
+    // Initialize visited array
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
 
     // Perform DFS for each unvisited node
-    for (int i = 0; i < vertices; i++) {
+    for (int i = 0; i < n; i++) {
         if (!visited[i]) {
-            dfs(i, graph, visited, stack, &top, vertices);
+            dfs(i, n, graph, visited, stack, &top);
         }
     }
 
-    // Print the topological sort by popping elements from the stack
+    // Print the topological sort in reverse order (last-in, first-out)
     printf("Topological Sort: ");
     for (int i = top - 1; i >= 0; i--) {
         printf("%d ", stack[i]);
     }
     printf("\n");
-
-    // Free allocated memory
-    free(visited);
-    free(stack);
 }
 
 int main() {
-    int vertices;
-    
-    // Read number of vertices
-    printf("Enter the number of vertices: ");
-    scanf("%d", &vertices);
-    
-    // Dynamically allocate memory for the adjacency matrix
-    int **graph = (int **)malloc(vertices * sizeof(int *));
-    for (int i = 0; i < vertices; i++) {
-        graph[i] = (int *)malloc(vertices * sizeof(int)); // Allocate memory for each row
-    }
-    
+    int n;
+
+    // Read number of nodes
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+
+    int graph[n][n]; // Adjacency matrix
+
     // Read the adjacency matrix
     printf("Enter the adjacency matrix (1 for edge, 0 for no edge):\n");
-    for (int i = 0; i < vertices; i++) {
-        for (int j = 0; j < vertices; j++) {
-            scanf("%d", &graph[i][j]);  // Fill the adjacency matrix
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
         }
     }
 
     // Perform topological sort
-    topologicalSort(vertices, graph);
-    
-    // Free allocated memory for the graph
-    for (int i = 0; i < vertices; i++) {
-        free(graph[i]);
-    }
-    free(graph);
-    
+    topologicalSort(n, graph);
+
     return 0;
 }
