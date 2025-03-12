@@ -1,66 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+#define max 10
 
-// Function to perform DFS and find topological sort
-void dfs(int node, int n, int graph[n][n], int visited[n], int stack[n], int *top) {
-    visited[node] = 1;  // Mark node as visited
+int stack[max];
+int top = -1;
 
-    // Recurse for all adjacent vertices
-    for (int i = 0; i < n; i++) {
-        if (graph[node][i] == 1 && !visited[i]) {
-            dfs(i, n, graph, visited, stack, top);
+void dfs(int graph[max][max], int visited[max], int vertex, int vertices)
+{
+    visited[vertex] = 1;
+    for (int i = 0; i < vertices; i++)
+    {
+        if (graph[vertex][i] == 1 && !visited[i])
+        {
+            dfs(graph, visited, i, vertices);
         }
     }
-
-    // Push the current node to the stack after all adjacent nodes are visited
-    stack[(*top)++] = node;
+    stack[++top] = vertex;
 }
-
-// Function to perform topological sort using DFS
-void topologicalSort(int n, int graph[n][n]) {
-    int visited[n];  // Array to track visited nodes
-    int stack[n];    // Stack to store topological order
-    int top = 0;     // Stack index
-
-    // Initialize visited array
-    for (int i = 0; i < n; i++) {
-        visited[i] = 0;
-    }
-
-    // Perform DFS for each unvisited node
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            dfs(i, n, graph, visited, stack, &top);
+void topological(int graph[max][max], int vertices)
+{
+    int visited[max] = {0};
+    for (int i = 0; i < vertices; i++)
+    {
+        if (!visited[i])
+        {
+            dfs(graph, visited, i, vertices);
         }
     }
-
-    // Print the topological sort in reverse order (last-in, first-out)
-    printf("Topological Sort: ");
-    for (int i = top - 1; i >= 0; i--) {
-        printf("%d ", stack[i]);
+    printf("\nTopological sort: ");
+    while (top != -1)
+    {
+        printf("%d ", stack[top--]);
     }
     printf("\n");
 }
-
-int main() {
-    int n;
-
-    // Read number of nodes
-    printf("Enter the number of nodes: ");
-    scanf("%d", &n);
-
-    int graph[n][n]; // Adjacency matrix
-
-    // Read the adjacency matrix
-    printf("Enter the adjacency matrix (1 for edge, 0 for no edge):\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            scanf("%d", &graph[i][j]);
-        }
+int main()
+{
+    int graph[max][max] = {0};
+    int vertices, edges, u, v;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &vertices);
+    printf("Enter the number of edges: ");
+    scanf("%d", &edges);
+    printf("Enter the edges (u v):\n");
+    for (int i = 0; i < edges; i++)
+    {
+        scanf("%d %d", &u, &v);
+        graph[u][v] = 1;
     }
-
-    // Perform topological sort
-    topologicalSort(n, graph);
-
+    topological(graph, vertices);
     return 0;
 }
