@@ -58,9 +58,8 @@ int main()
     int totalProfit = v[n][m];
     int capacity = m;
     printf("\nOptimal profit = %d\n", totalProfit);
-    printf("Selected items (0-based index): ");
-
-    printf("Selected items (1-based index): ");
+    
+    printf("Selected items: ");
     for (i = n; i > 0 && totalProfit > 0; i--)
     {
         if (totalProfit != v[i - 1][capacity])
